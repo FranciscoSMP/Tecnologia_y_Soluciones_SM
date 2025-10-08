@@ -49,18 +49,21 @@ footer .fab:hover {
 }
 
 /* Sección de bienvenida */
-section {
-    background-color: rgba(0, 0, 0, 0.5);
+section {   
+    background-color: rgba(189, 189, 189, 0.5);
     padding: 100px 20px;
     border-radius: 8px;
 }
 
 section h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #212529;
     font-size: 3rem;
     font-weight: 700;
 }
 
 section p {
+    color: #343a40;
     font-size: 1.25rem;
 }
 
