@@ -22,8 +22,10 @@ body {
 }
 
 .btn-primary {
-    background-color: #007bff;
+    background-color: #000000;
     border: none;
+    border-radius: 8px;
+    font-size: 16px;
 }
 
 .btn-primary:hover {
@@ -90,17 +92,7 @@ section p {
     border-radius: 8px 0 0 8px;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-}
 
-.btn-primary:hover {
-    background-color: #0056b3;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
 
 /* Enlace de 'Olvidé mi contraseña' */
 a {
