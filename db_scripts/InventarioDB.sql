@@ -119,4 +119,4 @@ GO
 -- Roles iniciales
 INSERT INTO Rol (Rol) VALUES
 ('Administrador'),
-('Cajero');
+('Bodeguero/a');
