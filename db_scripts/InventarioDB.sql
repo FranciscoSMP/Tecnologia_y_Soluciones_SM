@@ -20,8 +20,6 @@ CREATE TABLE Usuario (
     Contrasenia VARCHAR(255) NOT NULL,
     Id_Rol INT NOT NULL,
     FOREIGN KEY (Id_Rol) REFERENCES Rol(Id_Rol)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
 CREATE TABLE Categoria (
