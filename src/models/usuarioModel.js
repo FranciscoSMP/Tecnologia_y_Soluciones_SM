@@ -17,7 +17,7 @@ exports.addUsuario = async ({ nombre_usuario, primer_nombre, segundo_nombre, pri
         }
 
         const hash = await bcrypt.hash(contrasenia, 10);
-        
+
         const query = `
             INSERT INTO Usuario (Nombre_Usuario, Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Correo_Electronico, Contrasenia, Id_Rol)
             VALUES ('${nombre_usuario}', '${primer_nombre}', '${segundo_nombre}', '${primer_apellido}', '${segundo_apellido}', '${correo_electronico}', '${hash}', ${id_rol})
@@ -44,7 +44,7 @@ exports.obtenerRoles = async () => {
     }
 };
 
-exports.getUsuario = async () =>{
+exports.getUsuario = async () => {
     const conSQL = await pool.poolPromise;
     const result = await conSQL.request().query(`
             SELECT 
@@ -61,4 +61,56 @@ exports.getUsuario = async () =>{
             ORDER BY U.Id_Usuario ASC
     `);
     return result.recordset;
+};
+
+exports.getUsuarioById = async (id) => {
+    const query = `
+        SELECT 
+            Id_Usuario, Nombre_Usuario, Primer_Nombre, Segundo_Nombre, 
+            Primer_Apellido, Segundo_Apellido, Correo_Electronico, Id_Rol
+        FROM Usuario
+        WHERE Id_Usuario = ${id}
+    `;
+    const result = await ejecutarSQLServer(query);
+    return result.recordset[0];
+};
+
+exports.updateUsuario = async ({ id_usuario, nombre_usuario, correo_electronico, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, contrasenia, id_rol }) => {
+    let query = `
+        UPDATE Usuario
+        SET
+            Nombre_Usuario = '${nombre_usuario}',
+            Correo_Electronico = '${correo_electronico}',
+            Primer_Nombre = '${primer_nombre}',
+            Segundo_Nombre = '${segundo_nombre || null}',
+            Primer_Apellido = '${primer_apellido}',
+            Segundo_Apellido = '${segundo_apellido || null}',
+            Id_Rol = ${id_rol}
+    `;
+
+    if (contrasenia && contrasenia.trim() !== '') {
+        const hash = await bcrypt.hash(contrasenia, 10);
+        query += `, Contrasenia = '${hash}'`;
+    }
+
+    query += ` WHERE Id_Usuario = ${id_usuario}`;
+
+    try {
+        await ejecutarSQLServer(query);
+        return { message: 'Usuario actualizado correctamente' };
+    } catch (error) {
+        console.error('Error al actualizar el usuario:', error);
+        throw new Error('Error al actualizar el usuario');
+    }
+};
+
+exports.deleteUsuario = async (id_usuario) => {
+    try {
+        const query = `DELETE FROM Usuario WHERE Id_Usuario = ${id_usuario}`;
+        await guardarEnBaseDatos(query);
+        return { message: 'Usuario eliminado correctamente' };
+    } catch (error) {
+        console.error('Error al eliminar el usuario:', error);
+        throw new Error('Error al eliminar el usuario');
+    }
 };

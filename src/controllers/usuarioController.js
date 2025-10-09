@@ -24,7 +24,7 @@ exports.Usuario = async (req, res) => {
     }
 };
 
-exports.addUsuario = guardarDatos(usuarioModel.addUsuario, '/');
+exports.addUsuario = guardarDatos(usuarioModel.addUsuario, '/usuario/table');
 
 exports.getUsuario = async (req, res) => {
     const result = await usuarioModel.getUsuario();
@@ -33,3 +33,85 @@ exports.getUsuario = async (req, res) => {
         usuarios: result
     });
 }
+
+exports.getUsuarioById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const usuario = await usuarioModel.getUsuarioById(id);
+        const roles = await usuarioModel.obtenerRoles();
+
+        if (!usuario) {
+            req.flash('error_msg', 'El usuario no existe');
+            return res.redirect('/usuario/table');
+        }
+
+        res.render('update/usuario', { 
+            title: 'Editar Usuario', 
+            usuario, 
+            roles 
+        });
+
+    } catch (error) {
+        console.error(error);
+        req.flash('error_msg', 'Hubo un error al cargar los datos del usuario');
+        res.redirect('/usuario/table');
+    }
+};
+
+exports.updateUsuario = async (req, res) => {
+    const { id } = req.params;
+    const {
+        nombre_usuario,
+        correo_electronico,
+        primer_nombre,
+        segundo_nombre,
+        primer_apellido,
+        segundo_apellido,
+        contrasenia,
+        confirmar_contrasenia,
+        id_rol
+    } = req.body;
+
+    try {
+        if (contrasenia && contrasenia !== confirmar_contrasenia) {
+            req.flash('error_msg', 'Las contraseñas no coinciden.');
+            return res.redirect(`/usuario/editar/${id}`);
+        }
+
+        const updatedUser = {
+            id_usuario: id,
+            nombre_usuario,
+            correo_electronico,
+            primer_nombre,
+            segundo_nombre,
+            primer_apellido,
+            segundo_apellido,
+            contrasenia,
+            id_rol
+        };
+
+        const result = await usuarioModel.updateUsuario(updatedUser);
+
+        req.flash('success_msg', 'Usuario actualizado correctamente');
+        res.redirect('/usuario/table');
+
+    } catch (error) {
+        console.error(error);
+        req.flash('error_msg', 'Ocurrió un error al actualizar el usuario');
+        res.redirect(`/usuario/editar/${id}`);
+    }
+};
+
+exports.deleteUsuario = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await usuarioModel.deleteUsuario(id);
+        req.flash('success_msg', 'Usuario eliminado correctamente');
+        res.redirect('/usuario/table');
+    } catch (error) {
+        console.error(error);
+        req.flash('error_msg', 'Ocurrió un error al eliminar el usuario');
+        res.redirect('/usuario/table');
+    }
+};
+
