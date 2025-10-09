@@ -41,6 +41,8 @@ app.use((req, res, next) => {
 
 app.use(require('./routes/index'));
 app.use('/usuario', require('./routes/usuario'));
+app.use('/categoria', require('./routes/categoria'));
+app.use('/proveedor', require('./routes/proveedor'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 

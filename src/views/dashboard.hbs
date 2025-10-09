@@ -3,23 +3,56 @@
     <p>Bienvenido, <strong>{{user.Primer_Nombre}} {{user.Primer_Apellido}}</strong>.</p>
 
     {{#ifCond user.Id_Rol '==' 1}}
-    <div class="admin-menu mt-4 d-flex flex-wrap justify-content-center gap-4">
 
-        <a href="/usuario/add" class="menu-card text-decoration-none">
-            <div class="card shadow-sm border-0 h-100 p-4 rounded-4 text-center transition-all">
-                <i class="bi bi-person-plus display-5 text-success mb-2"></i>
-                <h5 class="fw-bold mb-2">Crear Nuevo Usuario</h5>
-                <p class="text-muted mb-0">Registrar un nuevo usuario en el sistema.</p>
-            </div>
-        </a>
+    <div class="admin-menu mt-4 d-flex flex-column gap-4">
 
-        <a href="/usuario/table" class="menu-card text-decoration-none">
-            <div class="card shadow-sm border-0 h-100 p-4 rounded-4 text-center transition-all">
-                <i class="bi bi-people display-5 text-primary mb-2"></i>
-                <h5 class="fw-bold mb-2">Listar Usuarios</h5>
-                <p class="text-muted mb-0">Ver y gestionar los usuarios existentes.</p>
-            </div>
-        </a>
+        <h4 class="text-uppercase">Gestión de Usuarios</h4>
+        <div class="d-flex gap-4 justify-content-center">
+            <a href="/usuario/add" class="menu-card text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 p-4 rounded-4 text-center transition-all">
+                    <i class="bi bi-person-plus display-5 text-success mb-2"></i>
+                    <h5 class="fw-bold mb-2">Crear Nuevo Usuario</h5>
+                </div>
+            </a>
+            <a href="/usuario/table" class="menu-card text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 p-4 rounded-4 text-center transition-all">
+                    <i class="bi bi-people display-5 text-primary mb-2"></i>
+                    <h5 class="fw-bold mb-2">Listar Usuarios</h5>
+                </div>
+            </a>
+        </div>
+
+        <h4 class="text-uppercase mt-4">Gestión de Categorías</h4>
+        <div class="d-flex gap-4 justify-content-center">
+            <a href="/categoria/add" class="menu-card text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 p-4 rounded-4 text-center transition-all">
+                    <i class="bi bi-tag display-5 text-warning mb-2"></i>
+                    <h5 class="fw-bold mb-2">Agregar Categoría</h5>
+                </div>
+            </a>
+            <a href="/categoria/table" class="menu-card text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 p-4 rounded-4 text-center transition-all">
+                    <i class="bi bi-list-ul display-5 text-info mb-2"></i>
+                    <h5 class="fw-bold mb-2">Listar Categorías</h5>
+                </div>
+            </a>
+        </div>
+
+        <h4 class="text-uppercase mt-4">Gestión de Proveedores</h4>
+        <div class="d-flex gap-4 justify-content-center">
+            <a href="/proveedor/add" class="menu-card text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 p-4 rounded-4 text-center transition-all">
+                    <i class="bi bi-tag display-5 text-warning mb-2"></i>
+                    <h5 class="fw-bold mb-2">Agregar Proveedor</h5>
+                </div>
+            </a>
+            <a href="/proveedor/table" class="menu-card text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 p-4 rounded-4 text-center transition-all">
+                    <i class="bi bi-list-ul display-5 text-info mb-2"></i>
+                    <h5 class="fw-bold mb-2">Listar Proveedores</h5>
+                </div>
+            </a>
+        </div>
 
     </div>
 
