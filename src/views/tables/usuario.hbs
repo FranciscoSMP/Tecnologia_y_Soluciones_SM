@@ -1,0 +1,61 @@
+<section class="mt-5">
+    <h3>Listado de Usuarios</h3>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre de Usuario</th>
+                <th>Primer Nombre</th>
+                <th>Primer Apellido</th>
+                <th>Correo Electrónico</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each usuarios}}
+            <tr>
+                <td>{{this.Id_Usuario}}</td>
+                <td>{{this.Nombre_Usuario}}</td>
+                <td>{{this.Primer_Nombre}}</td>
+                <td>{{this.Primer_Apellido}}</td>
+                <td>{{this.Correo_Electronico}}</td>
+                <td>{{this.Nombre_Rol}}</td>
+                <td>
+                    <a href="/usuarios/editar/{{this.Id_Usuario}}" class="btn btn-warning btn-sm">✏️ Editar</a>
+                    <button type="button" class="btn btn-danger btn-sm ms-1" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                        onclick="setDeleteModal('Usuario', '{{this.Nombre_Usuario}}', 'usuarios', {{this.Id_Usuario}})">
+                        🗑️ Eliminar
+                    </button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+    <a href="/dashboard" class="btn btn-secondary mt-3">Volver al Panel</a>
+</section>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form id="deleteForm" method="POST" action="">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p>¿Confirma que desea eliminar el siguiente elemento?</p>
+          <p><strong id="desc"></strong>: <span id="itemName"></span></p>
+          <p class="text-danger"><small>Esta acción no se puede deshacer.</small></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-danger">Eliminar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

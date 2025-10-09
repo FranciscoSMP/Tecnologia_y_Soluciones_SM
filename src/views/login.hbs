@@ -2,21 +2,29 @@
     <div class="card p-4 shadow" style="width: 350px; border-radius: 10px;">
         <h3 class="text-center mb-4">Inicio de Sesión</h3>
         <form method="POST" action="/login">
+            {{#if error_msg}}
+            <div id="success-alert" class="alert alert-danger fade-out">{{error_msg}}</div>
+            {{else if error}}
+            <div class="alert alert-danger">{{error}}</div>
+            {{/if}}
             <div class="mb-3 position-relative">
                 <label for="username" class="form-label">Usuario</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-user"></i></span>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Ingrese su usuario" required>
+                    <input type="text" id="username" name="username" class="form-control"
+                        placeholder="Ingrese su usuario" required>
                 </div>
             </div>
             <div class="mb-3 position-relative">
                 <label for="password" class="form-label">Contraseña</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Ingrese su contraseña" required>
+                    <input type="password" id="password" name="password" class="form-control"
+                        placeholder="Ingrese su contraseña" required>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary w-100" style="background-color: #3d3d3d; border: none;">Ingresar</button>
+            <button type="submit" class="btn btn-primary w-100"
+                style="background-color: #3d3d3d; border: none;">Ingresar</button>
         </form>
     </div>
 </section>

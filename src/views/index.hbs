@@ -1,4 +1,11 @@
 <section class="text-center mt-5 py-5" style="background-image: url('/images/inventory-bg.jpg'); background-size: cover; background-position: center;">
+    {{#if success_msg}}
+    <div id="success-alert" class="alert-overlay alert-center fade-out">
+        <div class="col-md-2">
+            <div class="alert alert-danger text-center">{{success_msg}}</div>
+        </div>
+    </div>
+    {{/if}}
     <div class="text-white">
         <h1 class="display-4 mb-3">Bienvenido al Sistema de Gestión de Inventario</h1>
         <p class="lead mb-4">Optimice las operaciones de su empresa con una gestión precisa y eficiente del inventario.</p>

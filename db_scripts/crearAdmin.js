@@ -14,19 +14,19 @@ async function crearUsuarioAdministrador() {
         const contrasenaPlano = 'admin123';
         const hashContrasena = await bcrypt.hash(contrasenaPlano, 10);
 
-        console.log(`🔑 Contraseña cifrada para '${nombreUsuario}': ${hashContrasena}`);
+        console.log(`Contraseña cifrada para '${nombreUsuario}': ${hashContrasena}`);
 
-        // 1️⃣ Verificar si el usuario ya existe
+        // Verificar si el usuario ya existe
         const usuarioExistente = await pool.request()
             .input('nombre_usuario', sql.VarChar(50), nombreUsuario)
             .query('SELECT * FROM Usuario WHERE Nombre_Usuario = @nombre_usuario');
 
         if (usuarioExistente.recordset.length > 0) {
-            console.log('ℹ️ El usuario administrador ya existe. No se creará uno nuevo.');
+            console.log('ℹEl usuario administrador ya existe. No se creará uno nuevo.');
             return;
         }
 
-        // 2️⃣ Obtener el rol "Administrador"
+        // Obtener el rol "Administrador"
         const rolAdmin = await pool.request()
             .input('rol', sql.VarChar(50), 'Administrador')
             .query('SELECT Id_Rol FROM Rol WHERE Rol = @rol');
@@ -37,7 +37,7 @@ async function crearUsuarioAdministrador() {
 
         const idRol = rolAdmin.recordset[0].Id_Rol;
 
-        // 3️⃣ Insertar el usuario administrador
+        // Insertar el usuario administrador
         const resultado = await pool.request()
             .input('nombre_usuario', sql.VarChar(50), nombreUsuario)
             .input('primer_nombre', sql.VarChar(50), primerNombre)
@@ -52,13 +52,13 @@ async function crearUsuarioAdministrador() {
                     (@nombre_usuario, @primer_nombre, @primer_apellido, @correo_electronico, @contrasenia, @id_rol)
             `);
 
-        console.log('✅ Usuario administrador creado correctamente.');
-        console.log(`👤 Usuario: ${nombreUsuario} | Correo: ${correo}`);
+        console.log('Usuario administrador creado correctamente.');
+        console.log(`Usuario: ${nombreUsuario} | Correo: ${correo}`);
 
     } catch (err) {
-        console.error('❌ Error al crear el usuario administrador:', err);
+        console.error('Error al crear el usuario administrador:', err);
     } finally {
-        console.log('🔒 Script finalizado.');
+        console.log('Script finalizado.');
         process.exit();
     }
 }

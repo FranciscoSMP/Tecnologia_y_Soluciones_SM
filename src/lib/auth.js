@@ -1,15 +1,9 @@
 module.exports = {
-    isLoggedIn(req, res, next) {
+    ensureAuthenticated: function(req, res, next) {
         if (req.isAuthenticated()) {
             return next();
         }
-        req.flash('error_msg', 'Debe iniciar sesión para acceder.');
+        req.flash('error_msg', 'Por favor inicie sesión para acceder a esta página');
         res.redirect('/login');
-    },
-    isNotLoggedIn(req, res, next) {
-        if (!req.isAuthenticated()) {
-            return next();
-        }
-        res.redirect('/dashboard');
     }
 };

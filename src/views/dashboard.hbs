@@ -1,9 +1,35 @@
-<section class="dashboard text-center mt-3 mb-3">
-    <h2>Panel de Administración</h2>
-    <p>Bienvenido, {{user.Primer_Nombre}} {{user.Primer_Apellido}}.</p>
+<section class="dashboard text-center mt-4 mb-5 container">
+    <h2 class="mb-3">Panel de Administración</h2>
+    <p>Bienvenido, <strong>{{user.Primer_Nombre}} {{user.Primer_Apellido}}</strong>.</p>
 
-    <div class="mt-4">
-        <a href="/usuarios/agregar" class="btn btn-success">Crear Nuevo Usuario</a>
-        <a href="/logout" class="btn btn-secondary ms-2">Cerrar Sesión</a>
+    {{#ifCond user.Id_Rol '==' 1}}
+    <div class="admin-menu mt-4 d-flex flex-wrap justify-content-center gap-4">
+
+        <a href="/usuario/add" class="menu-card text-decoration-none">
+            <div class="card shadow-sm border-0 h-100 p-4 rounded-4 text-center transition-all">
+                <i class="bi bi-person-plus display-5 text-success mb-2"></i>
+                <h5 class="fw-bold mb-2">Crear Nuevo Usuario</h5>
+                <p class="text-muted mb-0">Registrar un nuevo usuario en el sistema.</p>
+            </div>
+        </a>
+
+        <a href="/usuario/table" class="menu-card text-decoration-none">
+            <div class="card shadow-sm border-0 h-100 p-4 rounded-4 text-center transition-all">
+                <i class="bi bi-people display-5 text-primary mb-2"></i>
+                <h5 class="fw-bold mb-2">Listar Usuarios</h5>
+                <p class="text-muted mb-0">Ver y gestionar los usuarios existentes.</p>
+            </div>
+        </a>
+
     </div>
+
+    <div class="mt-5">
+        <a href="/logout" class="btn btn-outline-secondary px-4">Cerrar Sesión</a>
+    </div>
+
+    {{else}}
+    <div class="mt-4">
+        <a href="/logout" class="btn btn-outline-secondary px-4">Cerrar Sesión</a>
+    </div>
+    {{/ifCond}}
 </section>
