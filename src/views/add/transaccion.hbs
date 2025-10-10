@@ -1,0 +1,87 @@
+{{#ifCond user.Id_Rol '==' 1}}
+<h2 class="text-center my-4">Registrar Transacción</h2>
+<form action="/transaccion/guardar" method="POST" class="container form-General">
+    <div class="form-group mb-3">
+        <p><font color="red">*</font> Son campos obligatorios</p>
+
+        <label for="tipo_transaccion" class="form-label">Tipo de Transacción<font color="red">*</font></label>
+        <select name="tipo_transaccion" id="tipo_transaccion" class="form-control" required>
+            <option value="" disabled selected>Seleccione un Tipo</option>
+            <option value="Entrada">Entrada</option>
+            <option value="Salida">Salida</option>
+            <option value="Devolucion">Devolución</option>
+            <option value="Ajuste">Ajuste</option> <!-- Exclusivo rol 1 -->
+        </select>
+
+        <label for="motivo" class="form-label mt-3">Motivo</label>
+        <textarea name="motivo" id="motivo" class="form-control" rows="3"></textarea>
+
+        <label for="cantidad" class="form-label mt-3">Cantidad<font color="red">*</font></label>
+        <input type="number" name="cantidad" id="cantidad" class="form-control" required
+               step="1" placeholder="Para ajustes puede ingresar número negativo">
+
+        <label for="id_producto" class="form-label mt-3">Producto<font color="red">*</font></label>
+        <select name="id_producto" id="id_producto" class="form-control" required>
+            <option value="" disabled selected>Seleccione un Producto</option>
+            {{#each productos}}
+            <option value="{{this.id_producto}}">{{this.nombre}} (Stock: {{this.stock_actual}})</option>
+            {{/each}}
+        </select>
+
+        <label for="Id_Usuario" class="form-label mt-3">Usuario<font color="red">*</font></label>
+        <select name="Id_Usuario" id="Id_Usuario" class="form-control" required>
+            <option value="" disabled selected>Seleccione un Usuario</option>
+            {{#each usuarios}}
+            <option value="{{this.Id_Usuario}}" {{#ifCond this.Id_Usuario '==' ../user.Id_Usuario}}selected{{/ifCond}}>
+                {{this.Primer_Nombre}} {{this.Primer_Apellido}} ({{this.Nombre_Usuario}})
+            </option>
+            {{/each}}
+        </select>
+    </div>
+
+    <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary">Registrar</button>
+        <a href="/" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+
+{{else ifCond user.Id_Rol '==' 2}}
+<h2 class="text-center my-4">Registrar Transacción</h2>
+<form action="/transaccion/guardar" method="POST" class="container form-General">
+    <div class="form-group mb-3">
+        <p><font color="red">*</font> Son campos obligatorios</p>
+
+        <label for="tipo_transaccion" class="form-label">Tipo de Transacción<font color="red">*</font></label>
+        <select name="tipo_transaccion" id="tipo_transaccion" class="form-control" required>
+            <option value="" disabled selected>Seleccione un Tipo</option>
+            <option value="Entrada">Entrada</option>
+            <option value="Salida">Salida</option>
+            <option value="Devolucion">Devolución</option>
+            <!-- No se muestra "Ajuste" para el rol 2 -->
+        </select>
+
+        <label for="motivo" class="form-label mt-3">Motivo</label>
+        <textarea name="motivo" id="motivo" class="form-control" rows="3"></textarea>
+
+        <label for="cantidad" class="form-label mt-3">Cantidad<font color="red">*</font></label>
+        <input type="number" name="cantidad" id="cantidad" class="form-control" required
+               step="1">
+
+        <label for="id_producto" class="form-label mt-3">Producto<font color="red">*</font></label>
+        <select name="id_producto" id="id_producto" class="form-control" required>
+            <option value="" disabled selected>Seleccione un Producto</option>
+            {{#each productos}}
+            <option value="{{this.id_producto}}">{{this.nombre}} (Stock: {{this.stock_actual}})</option>
+            {{/each}}
+        </select>
+
+        <!-- Id_Usuario oculto para el rol 2 -->
+        <input type="hidden" name="Id_Usuario" value="{{user.Id_Usuario}}">
+    </div>
+
+    <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary">Registrar</button>
+        <a href="/" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{{/ifCond}}
