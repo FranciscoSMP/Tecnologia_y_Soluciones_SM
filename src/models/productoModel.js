@@ -21,3 +21,9 @@ exports.addProducto = async ({ nombre, descripcion, precio_unitario, stock_actua
     )`;
     await guardarEnBaseDatos(query);
 };
+
+exports.getProducto = async () => {
+    const conSQL = await pool.poolPromise;
+    const result = await conSQL.request().query('SELECT * FROM producto');
+    return result.recordset;
+};

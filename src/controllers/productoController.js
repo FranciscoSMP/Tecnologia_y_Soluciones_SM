@@ -27,4 +27,17 @@ exports.producto = async (req, res) => {
     }
 };
 
+exports.getProducto = async (req, res) => {
+    try {
+        const producto = await productoModel.getProducto();
+        res.render('tables/producto', { 
+            title: 'Productos',
+            producto 
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener productos');
+    }
+};
+
 exports.addProducto = guardarDatos(productoModel.addProducto, '/producto/table');
