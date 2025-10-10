@@ -42,7 +42,20 @@ exports.getProducto = async () => {
         JOIN 
             proveedor ON producto.id_proveedor = proveedor.id_proveedor
         `);
-    return result.recordset;
+    
+    const productosConEstado = result.recordset.map(p => {
+        let estado_inventario = 'normal';
+
+        if (p.stock_actual <= p.umbral_minimo) {
+            estado_inventario = 'critico';
+        } else if (p.stock_actual <= p.umbral_minimo * 1.45) {
+            estado_inventario = 'bajo';
+        }
+
+        return { ...p, estado_inventario };
+    });
+
+    return productosConEstado;
 };
 
 exports.getProductoById = async (id) => {

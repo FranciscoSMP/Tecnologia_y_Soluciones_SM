@@ -9,7 +9,7 @@
 <div class="container my-4">
     <h2 class="text-center mb-4">Lista de Productos</h2>
     {{#if producto.length}}
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover table-bordered align-middle">
         <thead class="thead-dark">
             <tr>
                 <th scope="col">ID</th>
@@ -21,13 +21,16 @@
                 <th scope="col">Umbral Mínimo</th>
                 <th scope="col">Categoría</th>
                 <th scope="col">Proveedor</th>
+                <th scope="col">Estado</th>
                 <th scope="col">Acciones</th>
-
             </tr>
         </thead>
         <tbody>
             {{#each producto}}
-            <tr>
+            <tr class="
+            {{#ifCond this.estado_inventario '==' 'critico'}}table-danger{{/ifCond}}
+            {{#ifCond this.estado_inventario '==' 'bajo'}}table-warning{{/ifCond}}
+        ">
                 <td>{{this.id_producto}}</td>
                 <td>{{this.sku}}</td>
                 <td>{{this.nombre}}</td>
@@ -38,9 +41,17 @@
                 <td>{{this.nombre_categoria}}</td>
                 <td>{{this.nombre_comercial}}</td>
                 <td>
-                    <a href="/producto/editar/{{this.id_producto}}"
-                        class="btn btn-sm btn-warning me-2">Editar</a>
-                    <button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                    {{#ifCond this.estado_inventario '==' 'critico'}}
+                    <span class="badge bg-danger">Reabastecer</span>
+                    {{else ifCond this.estado_inventario '==' 'bajo'}}
+                    <span class="badge bg-warning text-dark">Bajo</span>
+                    {{else}}
+                    <span class="badge bg-success">Óptimo</span>
+                    {{/ifCond}}
+                </td>
+                <td>
+                    <a href="/producto/editar/{{this.id_producto}}" class="btn btn-sm btn-warning me-2">Editar</a>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
                         data-bs-target="#confirmDeleteModal"
                         onclick="setDeleteModal('el producto', '{{this.nombre}}', 'producto', '{{this.id_producto}}')">
                         Eliminar

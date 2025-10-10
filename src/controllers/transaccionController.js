@@ -64,9 +64,6 @@ exports.tableTransaccion = async (req, res) => {
     }
 };
 
-// ==============================
-//   CONSULTAR TRANSACCIÓN ESPECÍFICA
-// ==============================
 exports.verTransaccion = async (req, res) => {
     try {
         const id = req.params.id;
@@ -84,5 +81,32 @@ exports.verTransaccion = async (req, res) => {
         console.error(error);
         req.flash('error_msg', error.message || 'Error al consultar la transacción');
         res.redirect('/transaccion/table');
+    }
+};
+
+exports.guardarMultiples = async (req, res) => {
+    try {
+        const transacciones = JSON.parse(req.body.transacciones);
+        if (!transacciones || !transacciones.length) {
+            req.flash('error_msg', 'No se recibieron transacciones.');
+            return res.redirect('/transaccion');
+        }
+
+        for (const t of transacciones) {
+            await transaccionModel.addTransaccion({
+                tipo_transaccion: t.tipo,
+                motivo: t.motivo,
+                cantidad: t.cantidad,
+                id_producto: t.id_producto,
+                Id_Usuario: t.Id_Usuario
+            });
+        }
+
+        req.flash('success_msg', `Se registraron ${transacciones.length} transacciones correctamente.`);
+        res.redirect('/transaccion/table');
+    } catch (error) {
+        console.error('Error al registrar múltiples transacciones:', error);
+        req.flash('error_msg', 'Ocurrió un error al registrar las transacciones.');
+        res.redirect('/transaccion');
     }
 };

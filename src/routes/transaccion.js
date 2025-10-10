@@ -11,4 +11,6 @@ router.get('/table', ensureAuthenticated, transaccionController.tableTransaccion
 
 router.get('/ver/:id', ensureAuthenticated, transaccionController.verTransaccion);
 
+router.post('/guardar-multiples', transaccionController.guardarMultiples);
+
 module.exports = router;

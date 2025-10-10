@@ -7,8 +7,10 @@ const helpers = {
                 return (v1 === v2) ? options.fn(this) : options.inverse(this);
             default:
                 return options.inverse(this);
-
         }
+    },
+    or: function (a, b) {
+        return a || b;
     }
 };
 module.exports = helpers;

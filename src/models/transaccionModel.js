@@ -106,3 +106,18 @@ exports.getTransaccionById = async (id) => {
 
     return { ...transaccion, fecha: fechaFormateada };
 };
+
+exports.getProductosMasVendidos = async () => {
+    const conSQL = await pool.poolPromise;
+    const result = await conSQL.request().query(`
+        SELECT TOP 5 
+            producto.nombre,
+            SUM(transaccion.cantidad) AS total_vendida
+        FROM transaccion
+        JOIN producto ON transaccion.id_producto = producto.id_producto
+        WHERE transaccion.tipo_transaccion = 'SALIDA'
+        GROUP BY producto.nombre
+        ORDER BY total_vendida DESC
+    `);
+    return result.recordset;
+};

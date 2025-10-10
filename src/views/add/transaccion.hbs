@@ -1,49 +1,142 @@
 {{#ifCond user.Id_Rol '==' 1}}
-<h2 class="text-center my-4">Registrar Transacción</h2>
-<form action="/transaccion/guardar" method="POST" class="container form-General">
-    <div class="form-group mb-3">
-        <p><font color="red">*</font> Son campos obligatorios</p>
+<h2 class="text-center my-4">Registrar Transacciones</h2>
 
-        <label for="tipo_transaccion" class="form-label">Tipo de Transacción<font color="red">*</font></label>
-        <select name="tipo_transaccion" id="tipo_transaccion" class="form-control" required>
-            <option value="" disabled selected>Seleccione un Tipo</option>
-            <option value="Entrada">Entrada</option>
-            <option value="Salida">Salida</option>
-            <option value="Devolucion">Devolución</option>
-            <option value="Ajuste">Ajuste</option> <!-- Exclusivo rol 1 -->
-        </select>
+<div class="container form-General">
+    <p><font color="red">*</font> Son campos obligatorios</p>
 
-        <label for="motivo" class="form-label mt-3">Motivo</label>
-        <textarea name="motivo" id="motivo" class="form-control" rows="3"></textarea>
+    <form id="transaccionForm">
+        <div class="form-group mb-3">
 
-        <label for="cantidad" class="form-label mt-3">Cantidad<font color="red">*</font></label>
-        <input type="number" name="cantidad" id="cantidad" class="form-control" required
-               step="1" placeholder="Para ajustes puede ingresar número negativo">
+            <label for="tipo_transaccion" class="form-label">Tipo de Transacción<font color="red">*</font></label>
+            <select id="tipo_transaccion" class="form-control" required>
+                <option value="" disabled selected>Seleccione un Tipo</option>
+                <option value="Entrada">Entrada</option>
+                <option value="Salida">Salida</option>
+                <option value="Devolucion">Devolución</option>
+                {{#ifCond user.Id_Rol '==' 1}}
+                <option value="Ajuste">Ajuste</option>
+                {{/ifCond}}
+            </select>
 
-        <label for="id_producto" class="form-label mt-3">Producto<font color="red">*</font></label>
-        <select name="id_producto" id="id_producto" class="form-control" required>
-            <option value="" disabled selected>Seleccione un Producto</option>
-            {{#each productos}}
-            <option value="{{this.id_producto}}">{{this.nombre}} (Stock: {{this.stock_actual}})</option>
-            {{/each}}
-        </select>
+            <label for="motivo" class="form-label mt-3">Motivo</label>
+            <textarea id="motivo" class="form-control" rows="2"></textarea>
 
-        <label for="Id_Usuario" class="form-label mt-3">Usuario<font color="red">*</font></label>
-        <select name="Id_Usuario" id="Id_Usuario" class="form-control" required>
-            <option value="" disabled selected>Seleccione un Usuario</option>
-            {{#each usuarios}}
-            <option value="{{this.Id_Usuario}}" {{#ifCond this.Id_Usuario '==' ../user.Id_Usuario}}selected{{/ifCond}}>
-                {{this.Primer_Nombre}} {{this.Primer_Apellido}} ({{this.Nombre_Usuario}})
-            </option>
-            {{/each}}
-        </select>
+            <label for="cantidad" class="form-label mt-3">Cantidad<font color="red">*</font></label>
+            <input type="number" id="cantidad" class="form-control" required step="1"
+                placeholder="Para ajustes puede usar valores negativos">
+
+            <label for="id_producto" class="form-label mt-3">Producto<font color="red">*</font></label>
+            <select id="id_producto" class="form-control" required>
+                <option value="" disabled selected>Seleccione un Producto</option>
+                {{#each productos}}
+                <option value="{{this.id_producto}}">{{this.nombre}} (Stock: {{this.stock_actual}})</option>
+                {{/each}}
+            </select>
+
+            {{#ifCond user.Id_Rol '==' 1}}
+            <label for="Id_Usuario" class="form-label mt-3">Usuario<font color="red">*</font></label>
+            <select id="Id_Usuario" class="form-control" required>
+                {{#each usuarios}}
+                <option value="{{this.Id_Usuario}}" {{#ifCond this.Id_Usuario '==' ../user.Id_Usuario}}selected{{/ifCond}}>
+                    {{this.Primer_Nombre}} {{this.Primer_Apellido}} ({{this.Nombre_Usuario}})
+                </option>
+                {{/each}}
+            </select>
+            {{else}}
+            <input type="hidden" id="Id_Usuario" value="{{user.Id_Usuario}}">
+            {{/ifCond}}
+        </div>
+
+        <div class="text-center mt-3">
+            <button type="button" class="btn btn-success" id="addTransaccionBtn">Agregar a la Cola</button>
+        </div>
+    </form>
+
+    <div class="mt-5">
+        <h4>Transacciones en Cola</h4>
+        <table class="table table-bordered table-hover mt-3" id="tablaCola">
+            <thead class="table-dark">
+                <tr>
+                    <th>Tipo</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Motivo</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyCola">
+                <tr id="emptyRow">
+                    <td colspan="5" class="text-center text-muted">No hay transacciones en cola.</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <div class="text-center mt-4">
-        <button type="submit" class="btn btn-primary">Registrar</button>
-        <a href="/" class="btn btn-secondary">Cancelar</a>
+        <form id="submitAllForm" action="/transaccion/guardar-multiples" method="POST">
+            <input type="hidden" name="transacciones" id="transaccionesHidden">
+            <button type="submit" class="btn btn-primary" id="btnRegistrarTodas" disabled>Registrar Todas</button>
+            <a href="/" class="btn btn-secondary">Cancelar</a>
+        </form>
     </div>
-</form>
+</div>
+
+<script>
+    const cola = [];
+
+    const form = document.getElementById('transaccionForm');
+    const tbody = document.getElementById('tbodyCola');
+    const transaccionesHidden = document.getElementById('transaccionesHidden');
+    const btnRegistrarTodas = document.getElementById('btnRegistrarTodas');
+
+    document.getElementById('addTransaccionBtn').addEventListener('click', () => {
+        const tipo = document.getElementById('tipo_transaccion').value;
+        const motivo = document.getElementById('motivo').value;
+        const cantidad = document.getElementById('cantidad').value;
+        const id_producto = document.getElementById('id_producto').value;
+        const productoTexto = document.getElementById('id_producto').selectedOptions[0].text;
+        const Id_Usuario = document.getElementById('Id_Usuario').value;
+
+        if (!tipo || !cantidad || !id_producto || !Id_Usuario) {
+            alert('Por favor complete los campos obligatorios.');
+            return;
+        }
+
+        cola.push({ tipo, motivo, cantidad, id_producto, productoTexto, Id_Usuario });
+        actualizarTabla();
+        form.reset();
+    });
+
+    function actualizarTabla() {
+        tbody.innerHTML = '';
+
+        if (cola.length === 0) {
+            tbody.innerHTML = `<tr id="emptyRow"><td colspan="5" class="text-center text-muted">No hay transacciones en cola.</td></tr>`;
+            btnRegistrarTodas.disabled = true;
+            return;
+        }
+
+        cola.forEach((t, index) => {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+                <td>${t.tipo}</td>
+                <td>${t.productoTexto}</td>
+                <td>${t.cantidad}</td>
+                <td>${t.motivo || '-'}</td>
+                <td><button class="btn btn-danger btn-sm" onclick="eliminarTransaccion(${index})">Eliminar</button></td>
+            `;
+            tbody.appendChild(fila);
+        });
+
+        btnRegistrarTodas.disabled = false;
+        transaccionesHidden.value = JSON.stringify(cola);
+    }
+
+    function eliminarTransaccion(index) {
+        cola.splice(index, 1);
+        actualizarTabla();
+    }
+</script>
 
 {{else ifCond user.Id_Rol '==' 2}}
 <h2 class="text-center my-4">Registrar Transacción</h2>
