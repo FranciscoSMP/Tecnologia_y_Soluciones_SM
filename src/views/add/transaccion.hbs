@@ -4,54 +4,60 @@
 <div class="container form-General">
     <p><font color="red">*</font> Son campos obligatorios</p>
 
-    <form id="transaccionForm">
-        <div class="form-group mb-3">
+    <form id="transaccionForm" class="container form-General p-4 border rounded shadow-sm">
+        <div class="row">
+            <!-- Columna izquierda -->
+            <div class="col-md-6">
+                <label for="tipo_transaccion" class="form-label">Tipo de Transacción<font color="red">*</font></label>
+                <select id="tipo_transaccion" class="form-control" required>
+                    <option value="" disabled selected>Seleccione un Tipo</option>
+                    <option value="Entrada">Entrada</option>
+                    <option value="Salida">Salida</option>
+                    <option value="Devolucion">Devolución</option>
+                    {{#ifCond user.Id_Rol '==' 1}}
+                    <option value="Ajuste">Ajuste</option>
+                    {{/ifCond}}
+                </select>
 
-            <label for="tipo_transaccion" class="form-label">Tipo de Transacción<font color="red">*</font></label>
-            <select id="tipo_transaccion" class="form-control" required>
-                <option value="" disabled selected>Seleccione un Tipo</option>
-                <option value="Entrada">Entrada</option>
-                <option value="Salida">Salida</option>
-                <option value="Devolucion">Devolución</option>
+                <label for="cantidad" class="form-label mt-3">Cantidad<font color="red">*</font></label>
+                <input type="number" id="cantidad" class="form-control" required step="1"
+                    placeholder="Para ajustes puede usar valores negativos">
+
+                <label for="id_producto" class="form-label mt-3">Producto<font color="red">*</font></label>
+                <select id="id_producto" class="form-control" required>
+                    <option value="" disabled selected>Seleccione un Producto</option>
+                    {{#each productos}}
+                    <option value="{{this.id_producto}}">{{this.nombre}} (Stock: {{this.stock_actual}})</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <!-- Columna derecha -->
+            <div class="col-md-6">
+                <label for="motivo" class="form-label">Motivo</label>
+                <textarea id="motivo" class="form-control" placeholder="Opcional..."></textarea>
+
                 {{#ifCond user.Id_Rol '==' 1}}
-                <option value="Ajuste">Ajuste</option>
+                <label for="Id_Usuario" class="form-label mt-3">Usuario<font color="red">*</font></label>
+                <select id="Id_Usuario" class="form-control" required>
+                    {{#each usuarios}}
+                    <option value="{{this.Id_Usuario}}" {{#ifCond this.Id_Usuario '==' ../user.Id_Usuario}}selected{{/ifCond}}>
+                        {{this.Primer_Nombre}} {{this.Primer_Apellido}} ({{this.Nombre_Usuario}})
+                    </option>
+                    {{/each}}
+                </select>
+                {{else}}
+                <input type="hidden" id="Id_Usuario" value="{{user.Id_Usuario}}">
                 {{/ifCond}}
-            </select>
-
-            <label for="motivo" class="form-label mt-3">Motivo</label>
-            <textarea id="motivo" class="form-control" rows="2"></textarea>
-
-            <label for="cantidad" class="form-label mt-3">Cantidad<font color="red">*</font></label>
-            <input type="number" id="cantidad" class="form-control" required step="1"
-                placeholder="Para ajustes puede usar valores negativos">
-
-            <label for="id_producto" class="form-label mt-3">Producto<font color="red">*</font></label>
-            <select id="id_producto" class="form-control" required>
-                <option value="" disabled selected>Seleccione un Producto</option>
-                {{#each productos}}
-                <option value="{{this.id_producto}}">{{this.nombre}} (Stock: {{this.stock_actual}})</option>
-                {{/each}}
-            </select>
-
-            {{#ifCond user.Id_Rol '==' 1}}
-            <label for="Id_Usuario" class="form-label mt-3">Usuario<font color="red">*</font></label>
-            <select id="Id_Usuario" class="form-control" required>
-                {{#each usuarios}}
-                <option value="{{this.Id_Usuario}}" {{#ifCond this.Id_Usuario '==' ../user.Id_Usuario}}selected{{/ifCond}}>
-                    {{this.Primer_Nombre}} {{this.Primer_Apellido}} ({{this.Nombre_Usuario}})
-                </option>
-                {{/each}}
-            </select>
-            {{else}}
-            <input type="hidden" id="Id_Usuario" value="{{user.Id_Usuario}}">
-            {{/ifCond}}
+            </div>
         </div>
 
-        <div class="text-center mt-3">
+        <div class="text-center mt-4">
             <button type="button" class="btn btn-success" id="addTransaccionBtn">Agregar a la Cola</button>
         </div>
     </form>
 
+    <!-- Tabla de transacciones en cola -->
     <div class="mt-5">
         <h4>Transacciones en Cola</h4>
         <table class="table table-bordered table-hover mt-3" id="tablaCola">
@@ -75,7 +81,7 @@
     <div class="text-center mt-4">
         <form id="submitAllForm" action="/transaccion/guardar-multiples" method="POST">
             <input type="hidden" name="transacciones" id="transaccionesHidden">
-            <button type="submit" class="btn btn-primary" id="btnRegistrarTodas" disabled>Registrar Todas</button>
+            <button type="submit" class="btn-guardar me-2" id="btnRegistrarTodas" disabled>Registrar Todas</button>
             <a href="/" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
@@ -83,7 +89,6 @@
 
 <script>
     const cola = [];
-
     const form = document.getElementById('transaccionForm');
     const tbody = document.getElementById('tbodyCola');
     const transaccionesHidden = document.getElementById('transaccionesHidden');
@@ -109,7 +114,6 @@
 
     function actualizarTabla() {
         tbody.innerHTML = '';
-
         if (cola.length === 0) {
             tbody.innerHTML = `<tr id="emptyRow"><td colspan="5" class="text-center text-muted">No hay transacciones en cola.</td></tr>`;
             btnRegistrarTodas.disabled = true;
@@ -140,41 +144,42 @@
 
 {{else ifCond user.Id_Rol '==' 2}}
 <h2 class="text-center my-4">Registrar Transacción</h2>
+
 <form action="/transaccion/guardar" method="POST" class="container form-General">
-    <div class="form-group mb-3">
-        <p><font color="red">*</font> Son campos obligatorios</p>
+    <div class="row">
+        <div class="col-md-6">
+            <p><font color="red">*</font> Son campos obligatorios</p>
 
-        <label for="tipo_transaccion" class="form-label">Tipo de Transacción<font color="red">*</font></label>
-        <select name="tipo_transaccion" id="tipo_transaccion" class="form-control" required>
-            <option value="" disabled selected>Seleccione un Tipo</option>
-            <option value="Entrada">Entrada</option>
-            <option value="Salida">Salida</option>
-            <option value="Devolucion">Devolución</option>
-            <!-- No se muestra "Ajuste" para el rol 2 -->
-        </select>
+            <label for="tipo_transaccion" class="form-label">Tipo de Transacción<font color="red">*</font></label>
+            <select name="tipo_transaccion" id="tipo_transaccion" class="form-control" required>
+                <option value="" disabled selected>Seleccione un Tipo</option>
+                <option value="Entrada">Entrada</option>
+                <option value="Salida">Salida</option>
+                <option value="Devolucion">Devolución</option>
+            </select>
 
-        <label for="motivo" class="form-label mt-3">Motivo</label>
-        <textarea name="motivo" id="motivo" class="form-control" rows="3"></textarea>
+            <label for="cantidad" class="form-label mt-3">Cantidad<font color="red">*</font></label>
+            <input type="number" name="cantidad" id="cantidad" class="form-control" required step="1">
 
-        <label for="cantidad" class="form-label mt-3">Cantidad<font color="red">*</font></label>
-        <input type="number" name="cantidad" id="cantidad" class="form-control" required
-               step="1">
+            <label for="id_producto" class="form-label mt-3">Producto<font color="red">*</font></label>
+            <select name="id_producto" id="id_producto" class="form-control" required>
+                <option value="" disabled selected>Seleccione un Producto</option>
+                {{#each productos}}
+                <option value="{{this.id_producto}}">{{this.nombre}} (Stock: {{this.stock_actual}})</option>
+                {{/each}}
+            </select>
+        </div>
 
-        <label for="id_producto" class="form-label mt-3">Producto<font color="red">*</font></label>
-        <select name="id_producto" id="id_producto" class="form-control" required>
-            <option value="" disabled selected>Seleccione un Producto</option>
-            {{#each productos}}
-            <option value="{{this.id_producto}}">{{this.nombre}} (Stock: {{this.stock_actual}})</option>
-            {{/each}}
-        </select>
-
-        <!-- Id_Usuario oculto para el rol 2 -->
-        <input type="hidden" name="Id_Usuario" value="{{user.Id_Usuario}}">
+        <div class="col-md-6">
+            <label for="motivo" class="form-label">Motivo</label>
+            <textarea name="motivo" id="motivo" class="form-control" rows="6"></textarea>
+            <input type="hidden" name="Id_Usuario" value="{{user.Id_Usuario}}">
+        </div>
     </div>
 
-    <div class="text-center mt-4">
-        <button type="submit" class="btn btn-primary">Registrar</button>
-        <a href="/" class="btn btn-secondary">Cancelar</a>
-    </div>
+    <div class="text-center">
+    <button type="submit" class="btn-guardar me-2">Registrar</button>
+    <a href="/" class="btn btn-secondary">Cancelar</a>
+  </div>
 </form>
 {{/ifCond}}

@@ -1,92 +1,136 @@
+{{!-- ✅ Mensaje de éxito con animación --}}
 {{#if success_msg}}
-<div id="success-alert" class="alert-overlay alert-center fade-out">
-    <div class="col-md-2">
-        <div class="alert alert-success text-center">{{success_msg}}</div>
-    </div>
+<div id="success-alert" class="alert-overlay fade-out">
+  <div class="alert alert-success custom-alert text-center">
+    {{success_msg}}
+  </div>
 </div>
 {{/if}}
 
 {{#ifCond user.Id_Rol '==' 1}}
-<div class="container my-4">
-    <h2 class="text-center mb-4">Lista de Transacciones</h2>
-    {{#if transacciones.length}}
-    <table class="table table-hover table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Tipo</th>
-                <th scope="col">Producto</th>
-                <th scope="col">Cantidad</th>
-                <th scope="col">Usuario</th>
-                <th scope="col">Fecha</th>
-                <th scope="col">Motivo</th>
-                <th scope="col">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each transacciones}}
-            <tr>
-                <td>{{this.id_transaccion}}</td>
-                <td>{{this.tipo_transaccion}}</td>
-                <td>{{this.nombre}}</td>
-                <td>{{this.cantidad}}</td>
-                <td>{{this.nombre_usuario}}</td>
-                <td>{{this.fecha}}</td>
-                <td>{{this.motivo}}</td>
-                <td>
-                    <a href="/transaccion/ver/{{this.id_transaccion}}" class="btn btn-sm btn-info">
-                        Ver Detalle
-                    </a>
-                </td>
-            </tr>
-            {{/each}}
-        </tbody>
+<div class="container my-5">
+
+  <!-- 🧭 Encabezado con título -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-center flex-grow-1">Lista de Transacciones</h2>
+  </div>
+
+  {{#if transacciones.length}}
+  <div class="table-responsive shadow-sm">
+    <table class="table custom-table table-striped align-middle text-center">
+      <thead class="table-success">
+        <tr>
+          <th>Tipo</th>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Usuario</th>
+          <th>Fecha</th>
+          <th>Motivo</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each transacciones}}
+        <tr>
+          <td>
+            {{#ifCond this.tipo_transaccion '==' 'Entrada'}}
+              <span class="badge bg-success">Entrada</span>
+            {{else ifCond this.tipo_transaccion '==' 'Salida'}}
+              <span class="badge bg-danger">Salida</span>
+            {{else ifCond this.tipo_transaccion '==' 'Ajuste'}}
+              <span class="badge bg-warning text-dark">Ajuste</span>
+            {{else ifCond this.tipo_transaccion '==' 'Devolución'}}
+              <span class="badge bg-info text-dark">Devolución</span>
+            {{else}}
+              <span class="badge bg-secondary">{{this.tipo_transaccion}}</span>
+            {{/ifCond}}
+          </td>
+          <td>{{this.nombre}}</td>
+          <td>{{this.cantidad}}</td>
+          <td>{{this.nombre_usuario}}</td>
+          <td>{{this.fecha}}</td>
+          <td>{{this.motivo}}</td>
+          <td>
+            <a href="/transaccion/ver/{{this.id_transaccion}}" class="btn btn-sm btn-info">
+              <i class="bi bi-eye"></i> Ver Detalle
+            </a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
     </table>
-    {{else}}
-    <div class="alert alert-warning text-center">
-        No hay transacciones registradas en este momento.
-    </div>
-    {{/if}}
+  </div>
+  {{else}}
+  <div class="alert alert-warning text-center shadow-sm">
+    No hay transacciones registradas en este momento.
+  </div>
+  {{/if}}
+
+  <!-- 🔙 Botón volver -->
+  <a href="/dashboard" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left-circle"></i> Volver al Panel
+  </a>
 </div>
 
+{{!-- 🔒 Vista para usuarios normales --}}
 {{else ifCond user.Id_Rol '==' 2}}
-<div class="container my-4">
-    <h2 class="text-center mb-4">Mis Transacciones</h2>
-    {{#if transacciones.length}}
-    <table class="table table-hover table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th>ID</th>
-                <th>Tipo</th>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Fecha</th>
-                <th>Motivo</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each transacciones}}
-            <tr>
-                <td>{{this.id_transaccion}}</td>
-                <td>{{this.tipo_transaccion}}</td>
-                <td>{{this.nombre}}</td>
-                <td>{{this.cantidad}}</td>
-                <td>{{this.fecha}}</td>
-                <td>{{this.motivo}}</td>
-                <td>
-                    <a href="/transaccion/ver/{{this.id_transaccion}}" class="btn btn-sm btn-info">
-                        Ver Detalle
-                    </a>
-                </td>
-            </tr>
-            {{/each}}
-        </tbody>
+<div class="container my-5">
+  <h2 class="text-center mb-4">Mis Transacciones</h2>
+
+  {{#if transacciones.length}}
+  <div class="table-responsive shadow-sm">
+    <table class="table custom-table table-striped align-middle text-center">
+      <thead class="table-success">
+        <tr>
+          <th>ID</th>
+          <th>Tipo</th>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Fecha</th>
+          <th>Motivo</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each transacciones}}
+        <tr>
+          <td>{{this.id_transaccion}}</td>
+          <td>
+            {{#ifCond this.tipo_transaccion '==' 'Entrada'}}
+              <span class="badge bg-success">Entrada</span>
+            {{else ifCond this.tipo_transaccion '==' 'Salida'}}
+              <span class="badge bg-danger">Salida</span>
+            {{else ifCond this.tipo_transaccion '==' 'Ajuste'}}
+              <span class="badge bg-warning text-dark">Ajuste</span>
+            {{else ifCond this.tipo_transaccion '==' 'Devolución'}}
+              <span class="badge bg-info text-dark">Devolución</span>
+            {{else}}
+              <span class="badge bg-secondary">{{this.tipo_transaccion}}</span>
+            {{/ifCond}}
+          </td>
+          <td>{{this.nombre}}</td>
+          <td>{{this.cantidad}}</td>
+          <td>{{this.fecha}}</td>
+          <td>{{this.motivo}}</td>
+          <td>
+            <a href="/transaccion/ver/{{this.id_transaccion}}" class="btn btn-sm btn-info">
+              <i class="bi bi-eye"></i> Ver Detalle
+            </a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
     </table>
-    {{else}}
-    <div class="alert alert-warning text-center">
-        No hay transacciones registradas aún.
-    </div>
-    {{/if}}
+  </div>
+  {{else}}
+  <div class="alert alert-warning text-center shadow-sm">
+    No hay transacciones registradas aún.
+  </div>
+  {{/if}}
+
+  <!-- 🔙 Botón volver -->
+  <a href="/dashboard" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left-circle"></i> Volver al Panel
+  </a>
 </div>
 {{/ifCond}}

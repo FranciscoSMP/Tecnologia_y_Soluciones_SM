@@ -1,48 +1,91 @@
-<section class="mt-5">
-  <h3>Listado de Usuarios</h3>
-  <table class="table table-bordered mt-3">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre de Usuario</th>
-        <th>Primer Nombre</th>
-        <th>Primer Apellido</th>
-        <th>Correo Electrónico</th>
-        <th>Rol</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each usuarios}}
-      <tr>
-        <td>{{this.Id_Usuario}}</td>
-        <td>{{this.Nombre_Usuario}}</td>
-        <td>{{this.Primer_Nombre}}</td>
-        <td>{{this.Primer_Apellido}}</td>
-        <td>{{this.Correo_Electronico}}</td>
-        <td>{{this.Nombre_Rol}}</td>
-        <td>
-          <a href="/usuario/editar/{{this.Id_Usuario}}" class="btn btn-warning btn-sm">✏️ Editar</a>
-          <button type="button" class="btn btn-danger btn-sm ms-1" data-bs-toggle="modal" data-bs-target="#deleteModal"
-            onclick="setDeleteModal('Usuario', '{{this.Nombre_Usuario}}', 'usuario', {{this.Id_Usuario}})">
-            🗑️ Eliminar
-          </button>
-        </td>
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
+{{!-- ✅ Mensaje de éxito con animación --}}
+{{#if success_msg}}
+<div id="success-alert" class="alert-overlay fade-out">
+  <div class="alert alert-success custom-alert text-center">
+    {{success_msg}}
+  </div>
+</div>
+{{/if}}
 
-  <a href="/dashboard" class="btn btn-secondary mt-3">Volver al Panel</a>
-</section>
+<div class="container my-5">
 
-<!-- Modal de confirmación -->
+  <!-- 🧭 Encabezado con título y botón -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-center flex-grow-1">Listado de Usuarios</h2>
+    <a href="/usuario/agregar" class="btn btn-success btn-sm ms-3">
+      <i class="bi bi-plus-circle"></i> Nuevo Usuario
+    </a>
+  </div>
+
+  {{#if usuarios.length}}
+  <div class="table-responsive shadow-sm">
+    <table class="table custom-table table-striped align-middle text-center">
+      <thead class="table-success">
+        <tr>
+          <th>Nombre de Usuario</th>
+          <th>Primer Nombre</th>
+          <th>Segundo Nombre</th>
+          <th>Primer Apellido</th>
+          <th>Segundo Apellido</th>
+          <th>Correo Electrónico</th>
+          <th>Rol</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each usuarios}}
+        <tr>
+          <td>{{this.Nombre_Usuario}}</td>
+          <td>{{this.Primer_Nombre}}</td>
+          <td>{{this.Segundo_Nombre}}</td>
+          <td>{{this.Primer_Apellido}}</td>
+          <td>{{this.Segundo_Apellido}}</td>
+          <td>{{this.Correo_Electronico}}</td>
+          <td>
+            {{#ifCond this.Nombre_Rol '==' 'Administrador'}}
+              <span class="badge bg-primary">Administrador</span>
+            {{else ifCond this.Nombre_Rol '==' 'Empleado'}}
+              <span class="badge bg-secondary">Empleado</span>
+            {{else}}
+              <span class="badge bg-info text-dark">{{this.Nombre_Rol}}</span>
+            {{/ifCond}}
+          </td>
+          <td>
+            <a href="/usuario/editar/{{this.Id_Usuario}}" class="btn btn-sm btn-warning me-2">
+              <i class="bi bi-pencil-square"></i> Editar
+            </a>
+            <button type="button"
+                    class="btn btn-sm btn-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteModal"
+                    onclick="setDeleteModal('Usuario', '{{this.Nombre_Usuario}}', 'usuario', {{this.Id_Usuario}})">
+              <i class="bi bi-trash"></i> Eliminar
+            </button>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  {{else}}
+  <div class="alert alert-warning text-center shadow-sm">
+    No hay usuarios registrados en este momento.
+  </div>
+  {{/if}}
+
+  <!-- 🔙 Botón volver -->
+  <a href="/dashboard" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left-circle"></i> Volver al Panel
+  </a>
+</div>
+
+<!-- 🗑️ Modal de confirmación -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form id="deleteForm" method="POST" action="">
         <div class="modal-header">
-          <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+          <h5 class="modal-title" id="deleteModalLabel">Confirmar Eliminación</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">

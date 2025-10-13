@@ -9,12 +9,11 @@ const ejecutarSQLServer = async (query) => {
     return conSQL.request().query(query);
 };
 
-exports.addProducto = async ({ nombre, descripcion, precio_unitario, stock_actual, umbral_minimo, id_categoria, id_proveedor }) => {
-    const query = `INSERT INTO producto (nombre, descripcion, precio_unitario, stock_actual, umbral_minimo, id_categoria, id_proveedor) VALUES (
+exports.addProducto = async ({ nombre, descripcion, precio_unitario, umbral_minimo, id_categoria, id_proveedor }) => {
+    const query = `INSERT INTO producto (nombre, descripcion, precio_unitario, umbral_minimo, id_categoria, id_proveedor) VALUES (
                     '${nombre}', 
                     '${descripcion}', 
                     '${precio_unitario}', 
-                    '${stock_actual}', 
                     '${umbral_minimo}',
                     '${id_categoria}',
                     '${id_proveedor}'
@@ -64,13 +63,12 @@ exports.getProductoById = async (id) => {
     return result.recordset[0];
 };
 
-exports.updateProducto = async ({ id_producto, nombre, descripcion, precio_unitario, stock_actual, umbral_minimo, id_categoria, id_proveedor }) => {
+exports.updateProducto = async ({ id_producto, nombre, descripcion, precio_unitario, umbral_minimo, id_categoria, id_proveedor }) => {
     const query = `
         UPDATE producto SET 
         nombre = '${nombre}', 
         descripcion = '${descripcion}',
         precio_unitario = '${precio_unitario}',
-        stock_actual = '${stock_actual}',
         umbral_minimo = '${umbral_minimo}',
         id_categoria = '${id_categoria}',
         id_proveedor = '${id_proveedor}'
