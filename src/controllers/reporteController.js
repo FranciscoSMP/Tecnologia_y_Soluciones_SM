@@ -16,6 +16,7 @@ exports.mostrarReportes = async (req, res) => {
             const porcentajeBajoStock = ((bajoStock.length / totalProductos) * 100).toFixed(2);
 
             res.render('dashboard', {
+                title: 'Pandel de Control',
                 user: req.user,
                 valorInventario: valorInventario.toFixed(2),
                 masVendidos,
@@ -28,6 +29,7 @@ exports.mostrarReportes = async (req, res) => {
         } else if (rol === 2) {
             // Rol empleado: mostrar solo reportes simplificados o vista distinta
             res.render('dashboardEmpleado', {
+                title: 'Pandel de Control',
                 user: req.user,
                 mensaje: 'Bienvenido al panel del empleado'
             });
