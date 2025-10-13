@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { ensureAuthenticated } = require('../lib/auth');
 const passport = require('passport');
+const reporteController = require('../controllers/reporteController');
 
 router.get('/', (req, res) => {
     if (req.isAuthenticated()) {
@@ -12,11 +13,7 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/dashboard', ensureAuthenticated, (req, res) => {
-    res.render('dashboard', {
-        title: 'Panel de Control',
-    });
-});
+router.get('/dashboard', ensureAuthenticated, reporteController.mostrarReportes);
 
 router.get('/login', (req, res) => {
     res.render('login', {

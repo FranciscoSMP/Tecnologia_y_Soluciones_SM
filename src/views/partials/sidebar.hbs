@@ -1,34 +1,40 @@
-<nav id="sidebar" class="bg-dark text-white p-3 vh-100">
-  <div class="text-center mb-4">
-    <h5 class="fw-bold sidebar-title">T&S SM</h5>
+{{#if user}}
+<nav id="sidebar" class="bg-dark text-white p-3 vh-100 d-flex flex-column justify-content-between">
+  <div>
+    <div class="text-center mb-4">
+      <h5 class="fw-bold sidebar-title">T&S SM</h5>
+      <small class="text-muted">Bienvenido, {{user.Primer_Nombre}}</small>
+    </div>
+
+    <ul class="nav flex-column">
+      <li class="nav-item mb-2">
+        <a href="/dashboard" class="nav-link text-white">
+          <i class="fas fa-home me-2"></i><span class="label">Inicio</span>
+        </a>
+      </li>
+
+      {{#ifCond user.Id_Rol '==' 1}}
+      <li class="nav-item mt-3"><strong class="text-uppercase small text-secondary">Gestión</strong></li>
+
+      <li class="nav-item mb-2"><a href="/usuario/table" class="nav-link text-white"><i class="fas fa-users me-2"></i>Usuarios</a></li>
+      <li class="nav-item mb-2"><a href="/categoria/table" class="nav-link text-white"><i class="fas fa-tags me-2"></i>Categorías</a></li>
+      <li class="nav-item mb-2"><a href="/proveedor/table" class="nav-link text-white"><i class="fas fa-truck me-2"></i>Proveedores</a></li>
+      <li class="nav-item mb-2"><a href="/producto/table" class="nav-link text-white"><i class="fas fa-box-open me-2"></i>Productos</a></li>
+      <li class="nav-item mb-2"><a href="/transaccion/table" class="nav-link text-white"><i class="fas fa-exchange-alt me-2"></i>Transacciones</a></li>
+      <li class="nav-item mb-2"><a href="/reporte" class="nav-link text-white"><i class="fas fa-chart-line me-2"></i>Reportes</a></li>
+      {{/ifCond}}
+
+      {{#ifCond user.Id_Rol '==' 2}}
+      <li class="nav-item mt-3"><strong class="text-uppercase small text-secondary">Operaciones</strong></li>
+
+      <li class="nav-item mb-2"><a href="/transaccion/add" class="nav-link text-white"><i class="fas fa-plus-circle me-2"></i>Registrar Transacción</a></li>
+      <li class="nav-item mb-2"><a href="/transaccion/table" class="nav-link text-white"><i class="fas fa-list me-2"></i>Historial</a></li>
+      {{/ifCond}}
+    </ul>
   </div>
 
-  <ul class="nav flex-column">
-    <li class="nav-item mb-2">
-      <a href="/dashboard" class="nav-link text-white">
-        <i class="fas fa-home me-2"></i><span class="label">Inicio</span>
-      </a>
-    </li>
-    <li class="nav-item mb-2">
-      <a href="/inventario" class="nav-link text-white">
-        <i class="fas fa-boxes me-2"></i><span class="label">Inventario</span>
-      </a>
-    </li>
-    <li class="nav-item mb-2">
-      <a href="/transacciones" class="nav-link text-white">
-        <i class="fas fa-exchange-alt me-2"></i><span class="label">Transacciones</span>
-      </a>
-    </li>
-    <li class="nav-item mb-2">
-      <a href="/reportes" class="nav-link text-white">
-        <i class="fas fa-chart-line me-2"></i><span class="label">Reportes</span>
-      </a>
-    </li>
-    <li class="nav-item mt-4">
-      <a href="/logout" class="nav-link text-danger">
-        <i class="fas fa-sign-out-alt me-2"></i><span class="label">Salir</span>
-      </a>
-    </li>
-  </ul>
+  <div class="text-center mt-auto">
+    <a href="/logout" class="btn btn-outline-light w-100"><i class="fas fa-sign-out-alt me-2"></i>Salir</a>
+  </div>
 </nav>
-
+{{/if}}
