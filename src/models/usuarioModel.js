@@ -82,9 +82,9 @@ exports.updateUsuario = async ({ id_usuario, nombre_usuario, correo_electronico,
             Nombre_Usuario = '${nombre_usuario}',
             Correo_Electronico = '${correo_electronico}',
             Primer_Nombre = '${primer_nombre}',
-            Segundo_Nombre = '${segundo_nombre || null}',
+            Segundo_Nombre = '${segundo_nombre}',
             Primer_Apellido = '${primer_apellido}',
-            Segundo_Apellido = '${segundo_apellido || null}',
+            Segundo_Apellido = '${segundo_apellido}',
             Id_Rol = ${id_rol}
     `;
 

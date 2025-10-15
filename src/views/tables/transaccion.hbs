@@ -1,4 +1,3 @@
-{{!-- ✅ Mensaje de éxito con animación --}}
 {{#if success_msg}}
 <div id="success-alert" class="alert-overlay fade-out">
   <div class="alert alert-success custom-alert text-center">
@@ -10,9 +9,11 @@
 {{#ifCond user.Id_Rol '==' 1}}
 <div class="container my-5">
 
-  <!-- 🧭 Encabezado con título -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="text-center flex-grow-1">Lista de Transacciones</h2>
+    <a href="/transaccion/add" class="btn btn-success btn-sm ms-3">
+      <i class="bi bi-plus-circle"></i> Nueva Transacción
+    </a>
   </div>
 
   {{#if transacciones.length}}
@@ -34,15 +35,15 @@
         <tr>
           <td>
             {{#ifCond this.tipo_transaccion '==' 'Entrada'}}
-              <span class="badge bg-success">Entrada</span>
+            <span class="badge bg-success">Entrada</span>
             {{else ifCond this.tipo_transaccion '==' 'Salida'}}
-              <span class="badge bg-danger">Salida</span>
+            <span class="badge bg-danger">Salida</span>
             {{else ifCond this.tipo_transaccion '==' 'Ajuste'}}
-              <span class="badge bg-warning text-dark">Ajuste</span>
+            <span class="badge bg-warning text-dark">Ajuste</span>
             {{else ifCond this.tipo_transaccion '==' 'Devolución'}}
-              <span class="badge bg-info text-dark">Devolución</span>
+            <span class="badge bg-info text-dark">Devolución</span>
             {{else}}
-              <span class="badge bg-secondary">{{this.tipo_transaccion}}</span>
+            <span class="badge bg-secondary">{{this.tipo_transaccion}}</span>
             {{/ifCond}}
           </td>
           <td>{{this.nombre}}</td>
@@ -82,7 +83,6 @@
     <table class="table custom-table table-striped align-middle text-center">
       <thead class="table-success">
         <tr>
-          <th>ID</th>
           <th>Tipo</th>
           <th>Producto</th>
           <th>Cantidad</th>
@@ -94,18 +94,17 @@
       <tbody>
         {{#each transacciones}}
         <tr>
-          <td>{{this.id_transaccion}}</td>
           <td>
             {{#ifCond this.tipo_transaccion '==' 'Entrada'}}
-              <span class="badge bg-success">Entrada</span>
+            <span class="badge bg-success">Entrada</span>
             {{else ifCond this.tipo_transaccion '==' 'Salida'}}
-              <span class="badge bg-danger">Salida</span>
+            <span class="badge bg-danger">Salida</span>
             {{else ifCond this.tipo_transaccion '==' 'Ajuste'}}
-              <span class="badge bg-warning text-dark">Ajuste</span>
+            <span class="badge bg-warning text-dark">Ajuste</span>
             {{else ifCond this.tipo_transaccion '==' 'Devolución'}}
-              <span class="badge bg-info text-dark">Devolución</span>
+            <span class="badge bg-info text-dark">Devolución</span>
             {{else}}
-              <span class="badge bg-secondary">{{this.tipo_transaccion}}</span>
+            <span class="badge bg-secondary">{{this.tipo_transaccion}}</span>
             {{/ifCond}}
           </td>
           <td>{{this.nombre}}</td>

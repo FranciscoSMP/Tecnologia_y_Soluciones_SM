@@ -285,3 +285,20 @@ footer {
   display: inline-block;
   vertical-align: middle;
 }
+
+.no-products {
+  background-color: rgba(255, 255, 255, 0.60);  /* Fondo con opacidad para mejorar el contraste */
+  padding: 20px;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  color: #f8f9fa;  /* Color blanco para que contraste bien */
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);  /* Sombra más fuerte para resaltar */
+  text-align: center;
+  margin-top: 20px;
+  transition: background-color 0.3s ease-in-out; /* Transición suave para el fondo */
+}
+
+.no-products:hover {
+  background-color: rgba(255, 255, 255, 0.75); /* Cambio de fondo al pasar el mouse */
+}

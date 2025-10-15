@@ -6,7 +6,6 @@ exports.mostrarReportes = async (req, res) => {
         const rol = req.user.Id_Rol;
 
         if (rol === 1) {
-            // Rol administrador: mostrar panel completo de reportes
             const productos = await productoModel.getProducto();
             const valorInventario = productos.reduce((total, p) => total + (p.precio_unitario * p.stock_actual), 0);
             const masVendidos = await transaccionModel.getProductosMasVendidos();
@@ -16,7 +15,7 @@ exports.mostrarReportes = async (req, res) => {
             const porcentajeBajoStock = ((bajoStock.length / totalProductos) * 100).toFixed(2);
 
             res.render('dashboard', {
-                title: 'Pandel de Control',
+                title: 'Panel de Control',
                 user: req.user,
                 valorInventario: valorInventario.toFixed(2),
                 masVendidos,

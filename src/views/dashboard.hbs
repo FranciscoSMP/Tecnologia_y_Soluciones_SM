@@ -42,7 +42,7 @@
         </div>
     </div>
 
-    <h4 class="mt-5">📦 Productos con Bajo Stock</h4>
+    <h4 class="mt-5">Productos con Bajo Stock</h4>
     {{#if bajoStock.length}}
     <table class="table table-bordered table-hover mt-3">
         <thead class="table-danger">
@@ -63,12 +63,13 @@
         </tbody>
     </table>
     {{else}}
-    <p class="text-muted">No hay productos en niveles críticos.</p>
+    <p class="text-muted no-products">No hay productos en niveles críticos.</p>
     {{/if}}
 
-    <h4 class="mt-5">🔥 Productos Más Vendidos</h4>
+
+    <h4 class="mt-5">Productos Más Vendidos</h4>
     {{#if masVendidos.length}}
-    <table class="table table-bordered table-hover mt-3">
+    <table table class="table custom-table table-striped align-middle text-center">
         <thead class="table-success">
             <tr>
                 <th>Nombre</th>

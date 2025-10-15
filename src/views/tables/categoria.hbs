@@ -10,13 +10,15 @@
 <div class="container my-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="text-center flex-grow-1">Lista de Categorías</h2>
-    <a href="/categoria/agregar" class="btn btn-success btn-sm ms-3">+ Nueva Categoría</a>
+    <a href="/categoria/add" class="btn btn-success btn-sm ms-3">
+      <i class="bi bi-plus-circle"></i> Nueva Categoría
+    </a>
   </div>
 
   {{#if categoria.length}}
   <div class="table-responsive">
-    <table class="table custom-table table-striped align-middle">
-      <thead>
+    <table class="table custom-table table-striped align-middle text-center">
+      <thead class="table-success">
         <tr>
           <th>Categoría</th>
           <th>Descripción</th>
@@ -32,8 +34,7 @@
             <a href="/categoria/editar/{{this.id_categoria}}" class="btn btn-sm btn-warning me-2">
               <i class="bi bi-pencil-square"></i> Editar
             </a>
-            <button type="button" class="btn btn-sm btn-danger"
-              data-bs-toggle="modal"
+            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
               data-bs-target="#confirmDeleteModal"
               onclick="setDeleteModal('la categoría', '{{this.nombre_categoria}}', 'categoria', '{{this.id_categoria}}')">
               <i class="bi bi-trash"></i> Eliminar
@@ -49,7 +50,9 @@
     No hay categorías disponibles en este momento.
   </div>
   {{/if}}
-  <a href="/dashboard" class="btn btn-secondary mt-3">Volver al Panel</a>
+  <a href="/dashboard" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left-circle"></i> Volver al Panel
+  </a>
 </div>
 
 {{else ifCond user.Id_Rol '==' 2}}
