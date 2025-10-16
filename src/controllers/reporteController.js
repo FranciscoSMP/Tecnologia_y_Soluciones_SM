@@ -28,7 +28,7 @@ exports.mostrarReportes = async (req, res) => {
         } else if (rol === 2) {
             // Rol empleado: mostrar solo reportes simplificados o vista distinta
             res.render('dashboardEmpleado', {
-                title: 'Pandel de Control',
+                title: 'Panel de Control',
                 user: req.user,
                 mensaje: 'Bienvenido al panel del empleado'
             });
