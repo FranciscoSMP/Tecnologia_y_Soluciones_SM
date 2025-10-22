@@ -9,7 +9,7 @@ const renderView = (view) => (req, res) => {
 const guardarDatos = (model, redirect) => async (req, res) => {
     try {
         await model(req.body);
-        req.flash('sucess_msg', 'Datos Guardados Correctamente');
+        req.flash('success_msg', 'Datos Guardados Correctamente');
         res.redirect(redirect);
     } catch (error) {
         console.error(error);

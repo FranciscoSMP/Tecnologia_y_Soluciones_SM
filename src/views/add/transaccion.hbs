@@ -156,7 +156,7 @@
                 <select id="tipo_transaccion" class="form-control" required>
                     <option value="" disabled selected>Seleccione un Tipo</option>
                     <option value="Entrada">Entrada</option>
-                    <option value="Salida">Venta</option>
+                    <option value="Salida">Salida</option>
                     <option value="Devolucion">Devolución</option>
                 </select>
 
@@ -206,7 +206,7 @@
     </div>
 
     <div class="text-center mt-4">
-        <form id="submitAllFormRol2" action="/transaccion/guardar" method="POST">
+        <form id="submitAllFormRol2" action="/transaccion/guardar-multiples" method="POST">
             <input type="hidden" name="transacciones" id="transaccionesHiddenRol2">
             <button type="submit" class="btn-guardar me-2" id="btnRegistrarRol2" disabled>Registrar Transacción</button>
             <a href="/transaccion/table" class="btn btn-secondary">Cancelar</a>
