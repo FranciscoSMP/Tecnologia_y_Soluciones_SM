@@ -51,6 +51,8 @@ app.use('/reporte', require('./routes/reporte'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), () => {
     console.log(`Servidor en el puerto ${app.get('port')}`);
 });
+
+module.exports = { app, server };
