@@ -2,7 +2,9 @@
 <h2 class="text-center my-4">Registrar Transacciones</h2>
 
 <div class="container form-General">
-    <p><font color="red">*</font> Son campos obligatorios</p>
+    <p>
+        <font color="red">*</font> Son campos obligatorios
+    </p>
 
     <form id="transaccionForm" class="container form-General p-4 border rounded shadow-sm">
         <div class="row">
@@ -41,7 +43,8 @@
                 <label for="Id_Usuario" class="form-label mt-3">Usuario<font color="red">*</font></label>
                 <select id="Id_Usuario" class="form-control" required>
                     {{#each usuarios}}
-                    <option value="{{this.Id_Usuario}}" {{#ifCond this.Id_Usuario '==' ../user.Id_Usuario}}selected{{/ifCond}}>
+                    <option value="{{this.Id_Usuario}}" {{#ifCond this.Id_Usuario '=='
+                        ../user.Id_Usuario}}selected{{/ifCond}}>
                         {{this.Primer_Nombre}} {{this.Primer_Apellido}} ({{this.Nombre_Usuario}})
                     </option>
                     {{/each}}
@@ -97,20 +100,39 @@
     document.getElementById('addTransaccionBtn').addEventListener('click', () => {
         const tipo = document.getElementById('tipo_transaccion').value;
         const motivo = document.getElementById('motivo').value;
-        const cantidad = document.getElementById('cantidad').value;
+        const cantidad = parseInt(document.getElementById('cantidad').value, 10);
         const id_producto = document.getElementById('id_producto').value;
         const productoTexto = document.getElementById('id_producto').selectedOptions[0].text;
         const Id_Usuario = document.getElementById('Id_Usuario').value;
 
-        if (!tipo || !cantidad || !id_producto || !Id_Usuario) {
+        // Validación de campos vacíos
+        if (!tipo || isNaN(cantidad) || !id_producto || !Id_Usuario) {
             alert('Por favor complete los campos obligatorios.');
             return;
         }
 
+        // Validación de valores negativos
+        const esAdmin = {{ user.Id_Rol }} === 1;
+        if (cantidad < 0 && (!esAdmin || tipo !== 'Ajuste')) {
+            alert('Solo los administradores pueden ingresar cantidades negativas y únicamente en transacciones de tipo "Ajuste".');
+            return;
+        }
+
+        // Verificación de stock para salidas/ventas
+        const stockMatch = productoTexto.match(/Stock:\s*(\d+)/);
+        const stockActual = stockMatch ? parseInt(stockMatch[1], 10) : 0;
+
+        if ((tipo === 'Salida') && cantidad > stockActual) {
+            alert(`Stock insuficiente. Solo hay ${stockActual} unidades disponibles.`);
+            return;
+        }
+
+        // Agregar a la cola
         cola.push({ tipo, motivo, cantidad, id_producto, productoTexto, Id_Usuario });
         actualizarTabla();
         form.reset();
     });
+
 
     function actualizarTabla() {
         tbody.innerHTML = '';
@@ -146,7 +168,9 @@
 <h2 class="text-center my-4">Registrar Transacción</h2>
 
 <div class="container form-General">
-    <p><font color="red">*</font> Son campos obligatorios</p>
+    <p>
+        <font color="red">*</font> Son campos obligatorios
+    </p>
 
     <!-- Formulario para el Rol 2 -->
     <form id="transaccionFormRol2" class="container form-General p-4 border rounded shadow-sm">
@@ -224,13 +248,27 @@
     document.getElementById('addTransaccionRol2Btn').addEventListener('click', () => {
         const tipo = document.getElementById('tipo_transaccion').value;
         const motivo = document.getElementById('motivo').value;
-        const cantidad = document.getElementById('cantidad').value;
+        const cantidad = parseInt(document.getElementById('cantidad').value, 10);
         const id_producto = document.getElementById('id_producto').value;
         const productoTexto = document.getElementById('id_producto').selectedOptions[0].text;
         const Id_Usuario = document.getElementById('Id_Usuario').value;
 
-        if (!tipo || !cantidad || !id_producto || !Id_Usuario) {
+        if (!tipo || isNaN(cantidad) || !id_producto || !Id_Usuario) {
             alert('Por favor complete los campos obligatorios.');
+            return;
+        }
+
+        // Validación: impedir valores negativos
+        if (cantidad < 0) {
+            alert('No se permiten valores negativos en la cantidad.');
+            return;
+        }
+
+        const stockMatch = productoTexto.match(/Stock:\s*(\d+)/);
+        const stockActual = stockMatch ? parseInt(stockMatch[1], 10) : 0;
+
+        if ((tipo === 'Salida') && cantidad > stockActual) {
+            alert(`Stock insuficiente. Solo hay ${stockActual} unidades disponibles.`);
             return;
         }
 

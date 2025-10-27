@@ -40,13 +40,13 @@ app.use((req, res, next) => {
     next();
 });
 
-
 app.use(require('./routes/index'));
 app.use('/usuario', require('./routes/usuario'));
 app.use('/categoria', require('./routes/categoria'));
 app.use('/proveedor', require('./routes/proveedor'));
 app.use('/producto', require('./routes/producto'));
 app.use('/transaccion', require('./routes/transaccion'));
+app.use('/reporte', require('./routes/reporte'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 

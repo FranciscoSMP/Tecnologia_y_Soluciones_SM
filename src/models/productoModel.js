@@ -47,7 +47,7 @@ exports.getProducto = async () => {
 
         if (p.stock_actual <= p.umbral_minimo) {
             estado_inventario = 'critico';
-        } else if (p.stock_actual <= p.umbral_minimo * 1.45) {
+        } else if (p.stock_actual <= p.umbral_minimo + 5) {
             estado_inventario = 'bajo';
         }
 

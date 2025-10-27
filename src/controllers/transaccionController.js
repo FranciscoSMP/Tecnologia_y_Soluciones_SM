@@ -1,6 +1,9 @@
 const transaccionModel = require('../models/transaccionModel');
 const usuarioModel = require('../models/usuarioModel');
 const productoModel = require('../models/productoModel');
+const PDFDocument = require('pdfkit');
+const { format } = require('date-fns');
+const { es } = require('date-fns/locale');
 
 const guardarDatos = (model, redirect) => async (req, res) => {
     try {
@@ -9,7 +12,7 @@ const guardarDatos = (model, redirect) => async (req, res) => {
             req.body.Id_Usuario = req.user.Id_Usuario;
         }
 
-        await model(req.body); 
+        await model(req.body);
         req.flash('success_msg', 'Transacción registrada correctamente');
         res.redirect(redirect);
     } catch (error) {
@@ -108,5 +111,100 @@ exports.guardarMultiples = async (req, res) => {
         console.error('Error al registrar múltiples transacciones:', error);
         req.flash('error_msg', 'Ocurrió un error al registrar las transacciones.');
         res.redirect('/transaccion');
+    }
+};
+
+exports.generarPDF = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const rol = req.user.Id_Rol;
+        const idUsuario = req.user.Id_Usuario;
+
+        const transaccion = await transaccionModel.getTransaccionById(id, rol, idUsuario);
+        if (!transaccion) {
+            req.flash('error_msg', 'Transacción no encontrada.');
+            return res.redirect('/transaccion/table');
+        }
+
+        // === Generar nombre del archivo con fecha y hora ===
+        const fechaGeneracion = new Date();
+        const nombreArchivo = `Reporte_Transaccion_${format(fechaGeneracion, "yyyyMMdd_HHmmss")}.pdf`;
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="${nombreArchivo}"`);
+
+        // === Crear documento PDF ===
+        const doc = new PDFDocument({ margin: 50 });
+        doc.pipe(res);
+
+        doc.info.Title = 'Reporte de Transacción';
+        doc.info.Author = 'Sistema de Gestión de Inventario';
+
+        // ===== Encabezado con fondo =====
+        doc
+            .rect(0, 0, doc.page.width, 70)
+            .fill('#2E86C1');
+
+        doc
+            .fillColor('white')
+            .fontSize(20)
+            .text('Detalle de Transacción', 0, 25, { align: 'center' });
+
+        doc.moveDown(3);
+
+        // ===== Tarjeta principal =====
+        const startY = 120;
+        const cardWidth = doc.page.width - 100;
+        const cardX = 50;
+        const cardHeight = 270;
+
+        // Sombra sutil (imitada con rectángulo translúcido)
+        doc.save()
+            .fillColor('#EAECEE')
+            .rect(cardX + 3, startY + 3, cardWidth, cardHeight)
+            .fill();
+
+        // Fondo de tarjeta
+        doc.fillColor('white')
+            .rect(cardX, startY, cardWidth, cardHeight)
+            .fill();
+
+        doc.strokeColor('#D6DBDF').lineWidth(1)
+            .rect(cardX, startY, cardWidth, cardHeight)
+            .stroke();
+
+        doc.fillColor('#2C3E50').fontSize(12);
+
+        const lineHeight = 25;
+        let y = startY + 30;
+
+        const addField = (label, value) => {
+            doc.font('Helvetica-Bold').text(`${label}:`, cardX + 30, y, { continued: true });
+            doc.font('Helvetica').text(` ${value || 'N/A'}`);
+            y += lineHeight;
+        };
+
+        addField('Tipo', transaccion.tipo_transaccion);
+        addField('Producto', `${transaccion.nombre} (SKU: ${transaccion.sku})`);
+        addField('Cantidad', transaccion.cantidad);
+        addField('Usuario', transaccion.nombre_usuario);
+        addField('Fecha', transaccion.fecha);
+        addField('Motivo', transaccion.motivo);
+
+        // ===== Pie de página =====
+        doc.moveDown(8);
+        doc.fontSize(10).fillColor('gray');
+        doc.text(
+            `Reporte generado el ${format(fechaGeneracion, "dd 'de' MMMM 'de' yyyy, HH:mm:ss", { locale: es })}`,
+            { align: 'center' }
+        );
+        doc.text('Sistema de Gestión de Inventario', { align: 'center' });
+
+        doc.end();
+
+    } catch (error) {
+        console.error('Error al generar el PDF:', error);
+        req.flash('error_msg', 'Error al generar el reporte PDF.');
+        res.redirect('/transaccion/table');
     }
 };

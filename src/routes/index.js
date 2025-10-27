@@ -14,6 +14,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/dashboard', ensureAuthenticated, reporteController.mostrarReportes);
+router.get('/pdf', reporteController.generarReportePDF);
 
 router.get('/login', (req, res) => {
     res.render('login', {

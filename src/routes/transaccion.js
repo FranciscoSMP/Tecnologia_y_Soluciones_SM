@@ -13,4 +13,6 @@ router.get('/ver/:id', ensureAuthenticated, transaccionController.verTransaccion
 
 router.post('/guardar-multiples', transaccionController.guardarMultiples);
 
+router.get('/pdf/:id', transaccionController.generarPDF);
+
 module.exports = router;
